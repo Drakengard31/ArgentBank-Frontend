@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { login } from '../services/api';
-import { loginSuccess, setError } from '../store/slices/authSlice';
+import { login } from '../../services/api';
+import { loginSuccess, setError } from '../../store/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
-function Login() {
+
+function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { error } = useSelector((state) => state.auth);
@@ -50,4 +50,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default LoginForm;
