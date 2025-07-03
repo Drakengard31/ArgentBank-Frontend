@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import LoginForm from '../components/Auth/LoginForm';
 
 export default function Login() {
-    const [error, setError] = useState(null);
-
     return (
-        <main className="main bg-dark">
-            <LoginForm onError={setError} />
-            {error && <p className="error">{error}</p>}
+        <main className="main bg-dark sign-in-bg-dark">
+            <LoginForm />
         </main>
     );
 }

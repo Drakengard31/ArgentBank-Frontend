@@ -1,26 +1,27 @@
 import { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { login } from '../../services/api';
-import { loginSuccess, setError } from '../../store/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
-
 
 function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { error } = useSelector((state) => state.auth);
+    const [rememberMe, setRememberMe] = useState(false);
+    const [error, setError] = useState(null);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(setError(null));
+        setError(null);
         try {
             const data = await login(email, password);
-            dispatch(loginSuccess(data));
+            if (rememberMe) {
+                localStorage.setItem('rememberMe', 'true');
+            }
             navigate('/profile');
         } catch (err) {
-            dispatch(setError(err.message || 'Login failed'));
+            setError('Invalid username or password');
         }
     };
 
@@ -28,23 +29,40 @@ function LoginForm() {
         <section className="sign-in-content">
             <i className="fa fa-user-circle sign-in-icon"></i>
             <h1>Sign In</h1>
-            {error && <p className="error-message">{error}</p>}
+            {error && <p className="error-txt">{error}</p>}
             <form onSubmit={handleSubmit}>
-                <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Email"
-                    required
-                />
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password"
-                    required
-                />
-                <button type="submit">Sign In</button>
+                <div className="input-wrapper">
+                    <label htmlFor="username">Username</label>
+                    <input
+                        type="text"
+                        id="username"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                </div>
+                <div className="input-wrapper">
+                    <label htmlFor="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </div>
+                <div className="input-remember">
+                    <input
+                        type="checkbox"
+                        id="remember-me"
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                    />
+                    <label htmlFor="remember-me">Remember me</label>
+                </div>
+                <button type="submit" className="sign-in-button">
+                    Sign In
+                </button>
             </form>
         </section>
     );
