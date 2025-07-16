@@ -2,34 +2,31 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getProfile } from '../../services/api';
-import { setUser, setError } from '../../store/slices/authSlice';
-import PropTypes from 'prop-types';
+import { setUser, logout } from '../../store/slices/authSlice';
 
 function PrivateRoute({ children }) {
-    const { token } = useSelector((state) => state.auth);
+    const { token, isAuthenticated } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!token) {
+        if (!token && !isAuthenticated) {
             navigate('/login');
-        } else {
+        } else if (token && !isAuthenticated) {
             const loadProfile = async () => {
                 try {
                     const userData = await getProfile(token);
-                    dispatch(setUser(userData));
+                    dispatch(setUser(userData.body));
                 } catch (error) {
-                    dispatch(setError('Session expired. Please login again.'));
+                    dispatch(logout());
                     navigate('/login');
                 }
             };
             loadProfile();
         }
-    }, [token, navigate, dispatch]);
+    }, [token, isAuthenticated, navigate, dispatch]);
 
-    return token ? children : null;
+    return isAuthenticated ? children : null;
 }
-PrivateRoute.propTypes = {
-    children: PropTypes.node.isRequired
-};
+
 export default PrivateRoute;
