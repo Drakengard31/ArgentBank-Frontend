@@ -2,7 +2,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './components/Auth/PrivateRoute';
 import HomePage from './components/HomePage';
 import Login from './pages/Login';
-import Profile from './pages/UserPage';
+import UserPage from './pages/UserPage';
+import TransactionList from './pages/TransactionList';
+import TransactionDetails from './pages/TransactionDetails';
 import Navbar from './components/Navbar';
 import Footer from "./components/Footer";
 
@@ -17,7 +19,23 @@ function App() {
                     path="/profile"
                     element={
                         <PrivateRoute>
-                            <Profile />
+                            <UserPage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/accounts/:accountId/transactions"
+                    element={
+                        <PrivateRoute>
+                            <TransactionList />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/transactions/:transactionId"
+                    element={
+                        <PrivateRoute>
+                            <TransactionDetails />
                         </PrivateRoute>
                     }
                 />
@@ -26,4 +44,5 @@ function App() {
         </BrowserRouter>
     );
 }
+
 export default App;

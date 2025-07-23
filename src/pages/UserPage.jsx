@@ -1,76 +1,46 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../store/slices/authSlice';
-import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 function UserPage() {
     const { user } = useSelector((state) => state.auth);
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
 
-    const handleLogout = () => {
-        dispatch(logout());
-        navigate('/');
-    };
+    // Données de compte simulées (à remplacer par les données de l'API)
+    const accounts = [
+        { id: '8349', type: 'Checking', number: 'x8349', balance: 2082.79 },
+        { id: '6712', type: 'Savings', number: 'x6712', balance: 10928.42 },
+        { id: '8349-cc', type: 'Credit Card', number: 'x8349', balance: 184.30 }
+    ];
 
     return (
         <div className="user-bg-dark">
-            <nav className="main-nav">
-                <a className="main-nav-logo" href="/">
-                    <h1 className="sr-only">Argent Bank</h1>
-                </a>
-                <div className="main-nav-right">
-                    <span className="main-nav-item">
-                        <i className="fa fa-user-circle"></i>
-                        {user?.firstName || 'Tony'}
-                    </span>
-                    <button className="main-nav-item" onClick={handleLogout}>
-                        <i className="fa fa-sign-out"></i>
-                        Sign Out
-                    </button>
-                </div>
-            </nav>
-
-            <main className="main">
+            {/* La navbar est maintenant gérée par le composant Navbar global */}
+            <main className="main bg-dark">
                 <div className="header">
                     <h1>Welcome back<br />{user?.firstName || 'Tony'} {user?.lastName || 'Jarvis'}!</h1>
                     <button className="edit-button">Edit Name</button>
                 </div>
 
-                {/* Account 1 */}
-                <section className="account">
-                    <div className="account-content-wrapper">
-                        <h3 className="account-title">Argent Bank Checking (x8349)</h3>
-                        <p className="account-amount">$2,082.79</p>
-                        <p className="account-amount-description">Available Balance</p>
-                    </div>
-                    <div className="account-content-wrapper cta">
-                        <button className="transaction-button">View transactions</button>
-                    </div>
-                </section>
+                <h2 className="sr-only">Accounts</h2>
 
-                {/* Account 2 */}
-                <section className="account">
-                    <div className="account-content-wrapper">
-                        <h3 className="account-title">Argent Bank Savings (x6712)</h3>
-                        <p className="account-amount">$10,928.42</p>
-                        <p className="account-amount-description">Available Balance</p>
-                    </div>
-                    <div className="account-content-wrapper cta">
-                        <button className="transaction-button">View transactions</button>
-                    </div>
-                </section>
-
-                {/* Account 3 */}
-                <section className="account">
-                    <div className="account-content-wrapper">
-                        <h3 className="account-title">Argent Bank Credit Card (x8349)</h3>
-                        <p className="account-amount">$184.30</p>
-                        <p className="account-amount-description">Current Balance</p>
-                    </div>
-                    <div className="account-content-wrapper cta">
-                        <button className="transaction-button">View transactions</button>
-                    </div>
-                </section>
+                {accounts.map((account) => (
+                    <section key={account.id} className="account">
+                        <div className="account-content-wrapper">
+                            <h3 className="account-title">Argent Bank {account.type} ({account.number})</h3>
+                            <p className="account-amount">${account.balance.toLocaleString('en-US', {minimumFractionDigits: 2})}</p>
+                            <p className="account-amount-description">
+                                {account.type === 'Credit Card' ? 'Current Balance' : 'Available Balance'}
+                            </p>
+                        </div>
+                        <div className="account-content-wrapper cta">
+                            <Link
+                                to={`/accounts/${account.id}/transactions`}
+                                className="transaction-button"
+                            >
+                                View transactions
+                            </Link>
+                        </div>
+                    </section>
+                ))}
             </main>
         </div>
     );
