@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 function UserPage() {
     const { user } = useSelector((state) => state.auth);
 
-    // Données de compte simulées (à remplacer par les données de l'API)
+    // Données de compte simulées
     const accounts = [
         { id: '8349', type: 'Checking', number: 'x8349', balance: 2082.79 },
         { id: '6712', type: 'Savings', number: 'x6712', balance: 10928.42 },
@@ -13,7 +13,6 @@ function UserPage() {
 
     return (
         <div className="user-bg-dark">
-            {/* La navbar est maintenant gérée par le composant Navbar global */}
             <main className="main bg-dark">
                 <div className="header">
                     <h1>Welcome back<br />{user?.firstName || 'Tony'} {user?.lastName || 'Jarvis'}!</h1>
