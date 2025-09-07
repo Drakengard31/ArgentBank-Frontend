@@ -1,8 +1,35 @@
-import { useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { updateUserProfile } from '../services/api';
+import { setUser } from '../store/slices/authSlice';
 
 function UserPage() {
-    const { user } = useSelector((state) => state.auth);
+    const [isEditing, setIsEditing] = useState(false);
+    const [userName, setUserName] = useState('');
+    const [error, setError] = useState(null);
+    const { user, token } = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+
+    // Initialiser le userName avec la valeur actuelle
+    useEffect(() => {
+        if (user?.userName) {
+            setUserName(user.userName);
+        }
+    }, [user]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const updatedUser = await updateUserProfile({ userName }, token);
+            dispatch(setUser(updatedUser.body || updatedUser));
+            setIsEditing(false);
+            setError(null);
+        } catch (error) {
+            setError('Failed to update username');
+            console.error('Update error:', error);
+        }
+    };
 
     // Données de compte simulées
     const accounts = [
@@ -15,8 +42,64 @@ function UserPage() {
         <div className="user-bg-dark">
             <main className="main bg-dark">
                 <div className="header">
-                    <h1>Welcome back<br />{user?.firstName || 'Tony'} {user?.lastName || 'Jarvis'}!</h1>
-                    <button className="edit-button">Edit Name</button>
+                    {!isEditing ? (
+                        <>
+                            <h1>Welcome back<br />{user?.firstName || 'Tony'} {user?.lastName || 'Jarvis'}!</h1>
+                            <button
+                                onClick={() => setIsEditing(true)}
+                                className="edit-button"
+                            >
+                                Edit Name
+                            </button>
+                        </>
+                    ) : (
+                        <div className="edit-form-container">
+                            <h3>Edit user info</h3>
+                            <form onSubmit={handleSubmit} className="edit-username-form">
+                                <div className="input-container">
+                                    <label htmlFor="username">User name:</label>
+                                    <input
+                                        type="text"
+                                        id="username"
+                                        value={userName}
+                                        onChange={(e) => setUserName(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                                <div className="input-container">
+                                    <label>First name:</label>
+                                    <input
+                                        type="text"
+                                        value={user?.firstName || ''}
+                                        disabled
+                                        className="disabled-input"
+                                    />
+                                </div>
+                                <div className="input-container">
+                                    <label>Last name:</label>
+                                    <input
+                                        type="text"
+                                        value={user?.lastName || ''}
+                                        disabled
+                                        className="disabled-input"
+                                    />
+                                </div>
+                                <div className="form-btn-container">
+                                    <button type="submit" className="edit-button">
+                                        Save
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="edit-button"
+                                        onClick={() => setIsEditing(false)}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                            {error && <p className="error-txt">{error}</p>}
+                        </div>
+                    )}
                 </div>
 
                 <h2 className="sr-only">Accounts</h2>

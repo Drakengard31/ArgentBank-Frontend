@@ -34,6 +34,13 @@ export const getProfile = async (token) => {
     return response.data;
 };
 
+export const updateUserProfile = async (data, token) => {
+    const response = await API.put('/user/profile', data, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+};
+
 export const getAccountTransactions = async (accountId, token) => {
     const response = await API.get(`/accounts/${accountId}/transactions`, {
         headers: { Authorization: `Bearer ${token}` },
