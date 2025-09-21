@@ -29,7 +29,16 @@ const authSlice = createSlice({
         setUser(state, action) {
             state.user = action.payload;
             state.isAuthenticated = true;
-            localStorage.setItem('user', JSON.stringify(action.payload));
+
+            // Mettre à jour le localStorage avec les nouvelles données utilisateur
+            if (localStorage.getItem('token')) {
+                localStorage.setItem('user', JSON.stringify(action.payload));
+            }
+
+            // Si pas de token dans localStorage, vérifier sessionStorage
+            if (sessionStorage.getItem('token')) {
+                sessionStorage.setItem('user', JSON.stringify(action.payload));
+            }
         },
         logout(state) {
             state.token = null;
@@ -38,6 +47,7 @@ const authSlice = createSlice({
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             sessionStorage.removeItem('token');
+            sessionStorage.removeItem('user');
         },
         setError(state, action) {
             state.error = action.payload;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateUserProfile } from '../services/api';
 import { setUser } from '../store/slices/authSlice';
@@ -12,7 +12,7 @@ function Profile() {
     const dispatch = useDispatch();
 
     // Initialise le nom d'utilisateur lorsque les données user sont disponibles
-    useState(() => {
+    useEffect(() => {
         if (user?.userName) {
             setUserName(user.userName);
         }
@@ -22,12 +22,28 @@ function Profile() {
         e.preventDefault();
         try {
             const updatedUser = await updateUserProfile({ userName }, token);
-            dispatch(setUser(updatedUser));
+
+            // Mise à jour immédiate du state Redux
+            const newUserData = {
+                ...user,
+                userName: userName
+            };
+
+            dispatch(setUser(newUserData));
             setIsEditing(false);
             setLocalError(null);
+
+            // Pas de rechargement
         } catch (error) {
             setLocalError('Failed to update username');
         }
+    };
+
+    const handleCancel = () => {
+        // Restaurer la valeur originale
+        setUserName(user?.userName || '');
+        setIsEditing(false);
+        setLocalError(null);
     };
 
     return (
@@ -51,6 +67,25 @@ function Profile() {
                                     value={userName}
                                     onChange={(e) => setUserName(e.target.value)}
                                     required
+                                    autoFocus
+                                />
+                            </div>
+                            <div className="input-container">
+                                <label>First name:</label>
+                                <input
+                                    type="text"
+                                    value={user?.firstName || ''}
+                                    disabled
+                                    className="disabled-input"
+                                />
+                            </div>
+                            <div className="input-container">
+                                <label>Last name:</label>
+                                <input
+                                    type="text"
+                                    value={user?.lastName || ''}
+                                    disabled
+                                    className="disabled-input"
                                 />
                             </div>
                             <div className="form-btn-container">
@@ -60,7 +95,7 @@ function Profile() {
                                 <button
                                     type="button"
                                     className="edit-button"
-                                    onClick={() => setIsEditing(false)}
+                                    onClick={handleCancel}
                                 >
                                     Cancel
                                 </button>
