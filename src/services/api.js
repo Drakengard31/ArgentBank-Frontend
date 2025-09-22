@@ -35,10 +35,15 @@ export const getProfile = async (token) => {
 };
 
 export const updateUserProfile = async (data, token) => {
-    const response = await API.put('/user/profile', data, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
+    try {
+        const response = await API.put('/user/profile', data, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('API Error updating profile:', error);
+        throw error;
+    }
 };
 
 export const getAccountTransactions = async (accountId, token) => {

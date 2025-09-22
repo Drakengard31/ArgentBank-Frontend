@@ -1,37 +1,13 @@
-import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { updateUserProfile } from '../services/api';
-import { setUser } from '../store/slices/authSlice';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import Account from '../components/Account/Account';
+import UserForm from '../components/UserForm/UserForm';
 
 function UserPage() {
     const [isEditing, setIsEditing] = useState(false);
-    const [userName, setUserName] = useState('');
-    const [error, setError] = useState(null);
-    const { user, token } = useSelector((state) => state.auth);
-    const dispatch = useDispatch();
+    const { user } = useSelector((state) => state.auth);
 
-    // Initialiser le userName avec la valeur actuelle
-    useEffect(() => {
-        if (user?.userName) {
-            setUserName(user.userName);
-        }
-    }, [user]);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const updatedUser = await updateUserProfile({ userName }, token);
-            dispatch(setUser(updatedUser.body || updatedUser));
-            setIsEditing(false);
-            setError(null);
-        } catch (error) {
-            setError('Failed to update username');
-            console.error('Update error:', error);
-        }
-    };
-
-    // Données de compte simulées
+    // Données de compte centralisées
     const accounts = [
         { id: '8349', type: 'Checking', number: 'x8349', balance: 2082.79 },
         { id: '6712', type: 'Savings', number: 'x6712', balance: 10928.42 },
@@ -53,75 +29,17 @@ function UserPage() {
                             </button>
                         </>
                     ) : (
-                        <div className="edit-form-container">
-                            <h3>Edit user info</h3>
-                            <form onSubmit={handleSubmit} className="edit-username-form">
-                                <div className="input-container">
-                                    <label htmlFor="username">User name:</label>
-                                    <input
-                                        type="text"
-                                        id="username"
-                                        value={userName}
-                                        onChange={(e) => setUserName(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                                <div className="input-container">
-                                    <label>First name:</label>
-                                    <input
-                                        type="text"
-                                        value={user?.firstName || ''}
-                                        disabled
-                                        className="disabled-input"
-                                    />
-                                </div>
-                                <div className="input-container">
-                                    <label>Last name:</label>
-                                    <input
-                                        type="text"
-                                        value={user?.lastName || ''}
-                                        disabled
-                                        className="disabled-input"
-                                    />
-                                </div>
-                                <div className="form-btn-container">
-                                    <button type="submit" className="edit-button">
-                                        Save
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="edit-button"
-                                        onClick={() => setIsEditing(false)}
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
-                            </form>
-                            {error && <p className="error-txt">{error}</p>}
-                        </div>
+                        <UserForm
+                            onCancel={() => setIsEditing(false)}
+                            initialUserName={user?.userName}
+                        />
                     )}
                 </div>
 
                 <h2 className="sr-only">Accounts</h2>
 
                 {accounts.map((account) => (
-                    <section key={account.id} className="account">
-                        <div className="account-content-wrapper">
-                            <h3 className="account-title">Argent Bank {account.type} ({account.number})</h3>
-                            <p className="account-amount">${account.balance.toLocaleString('en-US', {minimumFractionDigits: 2})}</p>
-                            <p className="account-amount-description">
-                                {account.type === 'Credit Card' ? 'Current Balance' : 'Available Balance'}
-                            </p>
-                        </div>
-                        <div className="account-content-wrapper cta">
-                            <Link
-                                to={`/accounts/${account.id}/transactions`}
-                                className="transaction-button"
-                            >
-                                View transactions
-                            </Link>
-                        </div>
-                    </section>
+                    <Account key={account.id} account={account} />
                 ))}
             </main>
         </div>
