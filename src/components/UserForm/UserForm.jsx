@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateUserProfile } from '../../services/api';
 import { setUser } from '../../store/slices/authSlice';
@@ -8,6 +8,13 @@ function UserForm({ onCancel, initialUserName }) {
     const [error, setError] = useState(null);
     const { user, token } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
+
+    // S'assurer que le userName est à jour
+    useEffect(() => {
+        if (user?.userName && userName !== user.userName) {
+            setUserName(user.userName);
+        }
+    }, [user?.userName, userName]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -67,7 +74,7 @@ function UserForm({ onCancel, initialUserName }) {
                     </button>
                     <button
                         type="button"
-                        className="edit-button"
+                        className="edit-button cancel-btn"
                         onClick={handleCancel}
                     >
                         Cancel

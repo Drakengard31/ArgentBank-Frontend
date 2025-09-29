@@ -47,9 +47,16 @@ export const updateUserProfile = async (data, token) => {
 };
 
 export const getAccountTransactions = async (accountId, token) => {
-    const response = await API.get(`/accounts/${accountId}/transactions`, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth() + 1;
+    const currentYear = currentDate.getFullYear();
+
+    const response = await API.get(
+        `/accounts/${accountId}/transactions?month=${currentMonth}&year=${currentYear}`,
+        {
+            headers: { Authorization: `Bearer ${token}` },
+        }
+    );
     return response.data;
 };
 

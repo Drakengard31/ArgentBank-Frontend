@@ -16,14 +16,18 @@ function UserPage() {
 
     return (
         <div className="user-bg-dark">
-            <main className="main bg-dark">
-                <div className="header">
+            <main className="main bg-dark user-page-main">
+                <div className="header user-header">
                     {!isEditing ? (
                         <>
-                            <h1>Welcome back<br />{user?.firstName || 'Tony'} {user?.lastName || 'Jarvis'}!</h1>
+                            <h1 className="welcome-title">
+                                Welcome back
+                                <br />
+                                {user?.firstName || 'Tony'} {user?.lastName || 'Jarvis'}!
+                            </h1>
                             <button
                                 onClick={() => setIsEditing(true)}
-                                className="edit-button"
+                                className="edit-button user-edit-btn"
                             >
                                 Edit Name
                             </button>
@@ -37,10 +41,11 @@ function UserPage() {
                 </div>
 
                 <h2 className="sr-only">Accounts</h2>
-
-                {accounts.map((account) => (
-                    <Account key={account.id} account={account} />
-                ))}
+                <div className="accounts-container">
+                    {accounts.map((account) => (
+                        <Account key={account.id} account={account} />
+                    ))}
+                </div>
             </main>
         </div>
     );

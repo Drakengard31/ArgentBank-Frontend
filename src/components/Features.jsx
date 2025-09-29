@@ -2,26 +2,42 @@ import React from 'react';
 import chatIcon from '../assets/icon-chat.webp';
 import moneyIcon from '../assets/icon-money.webp';
 import securityIcon from '../assets/icon-security.webp';
+import Feature from './Feature/Feature';
 
 function Features() {
+    const featuresData = [
+        {
+            icon: chatIcon,
+            title: "You are our #1 priority",
+            description: "Need to talk to a representative? You can get in touch through our 24/7 chat or through a phone call in less than 5 minutes.",
+            className: "feature-item"
+        },
+        {
+            icon: moneyIcon,
+            title: "More savings means higher rates",
+            description: "The more you save with us, the higher your interest rate will be!",
+            className: "feature-item"
+        },
+        {
+            icon: securityIcon,
+            title: "Security you can trust",
+            description: "We use top of the line encryption to make sure your data and money is always safe.",
+            className: "feature-item"
+        }
+    ];
+
     return (
         <section className="features">
             <h2 className="sr-only">Features</h2>
-            <div className="chatIcon">
-                <img src={chatIcon} alt="Chat Icon" className="feature-icon" />
-                <h3 className="feature-item-title">You are our #1 priority</h3>
-                <p>Need to talk to a representative? You can get in touch through our 24/7 chat or through a phone call in less than 5 minutes.</p>
-            </div>
-            <div className="moneyIcon">
-                <img src={moneyIcon} alt="Money Icon" className="feature-icon" />
-                <h3 className="feature-item-title">More savings means higher rates</h3>
-                <p>The more you save with us, the higher your interest rate will be!</p>
-            </div>
-            <div className="securityIcon">
-                <img src={securityIcon} alt="Security Icon" className="feature-icon" />
-                <h3 className="feature-item-title">Security you can trust</h3>
-                <p>We use top of the line encryption to make sure your data and money is always safe.</p>
-            </div>
+            {featuresData.map((feature, index) => (
+                <Feature
+                    key={index}
+                    icon={feature.icon}
+                    title={feature.title}
+                    description={feature.description}
+                    className={feature.className}
+                />
+            ))}
         </section>
     );
 }

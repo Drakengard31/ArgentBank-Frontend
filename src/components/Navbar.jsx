@@ -13,12 +13,14 @@ function Navbar() {
         navigate('/');
     };
 
-    // Fonction pour obtenir le nom à afficher
     const getDisplayName = () => {
         if (user?.userName) {
             return user.userName;
         }
-        return user?.firstName || 'Profile';
+        if (user?.firstName) {
+            return `${user.firstName} ${user.lastName || ''}`.trim();
+        }
+        return 'Profile';
     };
 
     return (
@@ -28,7 +30,7 @@ function Navbar() {
                 <h1 className="sr-only">Argent Bank</h1>
             </Link>
             <div className="main-nav-right">
-                {isAuthenticated ? (
+                {isAuthenticated && user ? (
                     <>
                         <Link to="/profile" className="main-nav-item profile-link">
                             <i className="fa fa-user-circle nav-icon"></i>
