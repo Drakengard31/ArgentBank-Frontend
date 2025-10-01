@@ -23,7 +23,7 @@ function UserPage() {
                             <h1 className="welcome-title">
                                 Welcome back
                                 <br />
-                                {user?.firstName || 'Tony'} {user?.lastName || 'Jarvis'}!
+                                {user?.userName || 'Tony'} {user?.lastName || 'Jarvis'}!
                             </h1>
                             <button
                                 onClick={() => setIsEditing(true)}
