@@ -3,7 +3,7 @@ import { setLoading, logout } from '../store/slices/authSlice';
 import { store } from '../store/store';
 
 const API = axios.create({
-    baseURL: 'http://localhost:3001/api/v1',
+    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3001/api/v1',
 });
 
 // Intercepteur pour gérer les erreurs 401
